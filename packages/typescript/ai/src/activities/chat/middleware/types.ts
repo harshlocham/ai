@@ -79,9 +79,9 @@ export interface ChatMiddlewareContext {
   /** Names of configured tools, if any */
   toolNames?: Array<string>
   /** Flattened generation options (temperature, topP, maxTokens, metadata) */
-  options?: Record<string, unknown>
+  options?: Record<string, unknown> | undefined
   /** Provider-specific model options */
-  modelOptions?: Record<string, unknown>
+  modelOptions?: Record<string, unknown> | undefined
 
   // --- Computed info ---
 
@@ -121,8 +121,8 @@ export interface ChatMiddlewareConfig {
   temperature?: number
   topP?: number
   maxTokens?: number
-  metadata?: Record<string, unknown>
-  modelOptions?: Record<string, unknown>
+  metadata?: Record<string, unknown> | undefined
+  modelOptions?: Record<string, unknown> | undefined
 }
 
 // ===========================
@@ -257,11 +257,13 @@ export interface FinishInfo {
   /** Final accumulated text content */
   content: string
   /** Final usage totals, if available */
-  usage?: {
-    promptTokens: number
-    completionTokens: number
-    totalTokens: number
-  }
+  usage?:
+    | {
+        promptTokens: number
+        completionTokens: number
+        totalTokens: number
+      }
+    | undefined
 }
 
 /**
