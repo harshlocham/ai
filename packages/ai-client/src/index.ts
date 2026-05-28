@@ -43,6 +43,7 @@ export type {
   VideoGenerateInput,
 } from './generation-types'
 export { GENERATION_EVENTS } from './generation-types'
+export { UnsupportedResponseStreamError } from './response-stream'
 export { clientTools, createChatClientOptions } from './types'
 export {
   createAIDevtoolsGenerationPreview,
@@ -58,7 +59,7 @@ export type {
   ExtractToolInput,
   ExtractToolOutput,
 } from './tool-types'
-export type { AnyClientTool } from '@tanstack/ai'
+export type { AnyClientTool } from '@tanstack/ai/client'
 export type {
   RealtimeAdapter,
   RealtimeConnection,
@@ -69,6 +70,8 @@ export type {
 export {
   fetchServerSentEvents,
   fetchHttpStream,
+  xhrServerSentEvents,
+  xhrHttpStream,
   stream,
   rpcStream,
   StreamTruncatedError,
@@ -77,6 +80,7 @@ export {
   type FetchConnectionOptions,
   type RunAgentInputContext,
   type SubscribeConnectionAdapter,
+  type XhrConnectionOptions,
 } from './connection-adapters'
 
 // Re-export message converters from @tanstack/ai
@@ -87,7 +91,7 @@ export {
   convertMessagesToModelMessages,
   normalizeToUIMessage,
   generateMessageId,
-} from '@tanstack/ai'
+} from '@tanstack/ai/client'
 
 // Re-export stream processing from @tanstack/ai (shared implementation)
 export {
@@ -110,4 +114,4 @@ export {
   type ChunkRecording,
   type ProcessorResult,
   type ProcessorState,
-} from '@tanstack/ai'
+} from '@tanstack/ai/client'
