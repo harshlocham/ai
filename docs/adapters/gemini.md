@@ -122,10 +122,7 @@ The `geminiTextInteractions` adapter routes through `client.interactions.create`
 
 ```typescript
 import { chat } from "@tanstack/ai";
-import {
-  geminiTextInteractions,
-  type GeminiInteractionsCustomEventValue,
-} from "@tanstack/ai-gemini/experimental";
+import { geminiTextInteractions } from "@tanstack/ai-gemini/experimental";
 
 // Turn 1: introduce yourself, capture the interaction id.
 let interactionId: string | undefined;
@@ -199,7 +196,6 @@ export async function POST({ request }: { request: Request }) {
 ```tsx
 import { useEffect, useMemo, useState } from "react";
 import { fetchServerSentEvents, useChat } from "@tanstack/ai-react";
-import type { GeminiInteractionsCustomEventValue } from "@tanstack/ai-gemini/experimental";
 
 function GeminiChat() {
   const [interactionId, setInteractionId] = useState<string | undefined>();
@@ -213,11 +209,13 @@ function GeminiChat() {
     connection: fetchServerSentEvents("/api/chat"),
     body,
     onCustomEvent: (eventType, data) => {
-      if (eventType === "gemini.interactionId") {
-        const value = data as
-          | GeminiInteractionsCustomEventValue<"gemini.interactionId">
-          | undefined;
-        if (value?.interactionId) setInteractionId(value.interactionId);
+      if (
+        eventType === "gemini.interactionId" &&
+        typeof data === "object" &&
+        data !== null &&
+        "interactionId" in data
+      ) {
+        setInteractionId(String(data.interactionId));
       }
     },
   });
@@ -287,8 +285,14 @@ The server's interaction id arrives as an AG-UI `CUSTOM` event emitted just befo
 
 ```typescript
 for await (const chunk of stream) {
-  if (chunk.type === "CUSTOM" && chunk.name === "gemini.interactionId") {
-    const id = (chunk.value as { interactionId: string }).interactionId;
+  if (
+    chunk.type === "CUSTOM" &&
+    chunk.name === "gemini.interactionId" &&
+    typeof chunk.value === "object" &&
+    chunk.value !== null &&
+    "interactionId" in chunk.value
+  ) {
+    const id = String(chunk.value.interactionId);
     // Persist `id` wherever you store per-user conversation pointers —
     // pass it back on the next turn as `previous_interaction_id`.
   }
