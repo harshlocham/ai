@@ -40,6 +40,11 @@
           "addedAt": "2026-04-15"
         },
         {
+          "label": "Quick Start: Angular",
+          "to": "getting-started/quick-start-angular",
+          "addedAt": "2026-06-15"
+        },
+        {
           "label": "Quick Start: Server Only",
           "to": "getting-started/quick-start-server",
           "addedAt": "2026-04-15"
@@ -391,6 +396,11 @@
           "label": "@tanstack/ai-svelte",
           "to": "api/ai-svelte",
           "addedAt": "2026-04-15"
+        },
+        {
+          "label": "@tanstack/ai-angular",
+          "to": "api/ai-angular",
+          "addedAt": "2026-06-15"
         }
       ]
     },
