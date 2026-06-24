@@ -79,7 +79,7 @@ export async function POST(request: Request) {
 ## Example: With Tools
 
 ```typescript
-import { chat, toolDefinition } from "@tanstack/ai";
+import { chat, toServerSentEventsResponse, toolDefinition } from "@tanstack/ai";
 import { grokText } from "@tanstack/ai-grok";
 import { z } from "zod";
 
@@ -96,11 +96,17 @@ const getWeather = getWeatherDef.server(async ({ location }) => {
   return { temperature: 72, conditions: "sunny" };
 });
 
-const stream = chat({
-  adapter: grokText("grok-build-0.1"),
-  messages,
-  tools: [getWeather],
-});
+export async function POST(request: Request) {
+  const { messages } = await request.json();
+
+  const stream = chat({
+    adapter: grokText("grok-build-0.1"),
+    messages,
+    tools: [getWeather],
+  });
+
+  return toServerSentEventsResponse(stream);
+}
 ```
 
 ## Model Options
@@ -108,17 +114,26 @@ const stream = chat({
 Grok supports xAI Responses API options. Sampling parameters live here too — `temperature`, `top_p`, and `max_output_tokens` — rather than as root-level props on `chat()`:
 
 ```typescript
-const stream = chat({
-  adapter: grokText("grok-build-0.1"),
-  messages,
-  modelOptions: {
-    temperature: 0.7,
-    top_p: 0.9,
-    max_output_tokens: 1024,
-    store: false,
-    include: ["reasoning.encrypted_content"],
-  },
-});
+import { chat, toServerSentEventsResponse } from "@tanstack/ai";
+import { grokText } from "@tanstack/ai-grok";
+
+export async function POST(request: Request) {
+  const { messages } = await request.json();
+
+  const stream = chat({
+    adapter: grokText("grok-build-0.1"),
+    messages,
+    modelOptions: {
+      temperature: 0.7,
+      top_p: 0.9,
+      max_output_tokens: 1024,
+      store: false,
+      include: ["reasoning.encrypted_content"],
+    },
+  });
+
+  return toServerSentEventsResponse(stream);
+}
 ```
 
 > If you previously passed `temperature` / `topP` / `maxTokens` at the root of `chat()`, see [Moving Sampling Options into modelOptions](../migration/sampling-options-to-model-options).
@@ -127,12 +142,17 @@ const stream = chat({
 
 Summarize long text content:
 
-```typescript
+<!-- ignored: grokSummarize()'s resolved provider-options type sits in a
+     contravariant position in SummarizeAdapter, so it isn't assignable to
+     summarize()'s adapter param for any current Grok model. Tracked in #821;
+     un-ignore once the adapter type is corrected. -->
+
+```typescript ignore
 import { summarize } from "@tanstack/ai";
 import { grokSummarize } from "@tanstack/ai-grok";
 
 const result = await summarize({
-  adapter: grokSummarize("grok-build-0.1"),
+  adapter: grokSummarize("grok-4.3"),
   text: "Your long text to summarize...",
   maxLength: 100,
   style: "concise", // "concise" | "bullet-points" | "paragraph"
@@ -163,6 +183,9 @@ are aspect-ratio sized — `size` takes an `aspectRatio_resolution` template
 like `"16:9_2k"` (the `_2k` suffix is optional):
 
 ```typescript
+import { generateImage } from "@tanstack/ai";
+import { grokImage } from "@tanstack/ai-grok";
+
 const result = await generateImage({
   adapter: grokImage("grok-imagine-image"),
   prompt: "A futuristic cityscape at sunset",
@@ -179,6 +202,9 @@ there is no in-prompt referencing syntax; write the prompt naturally and
 your text is sent verbatim:
 
 ```typescript
+import { generateImage } from "@tanstack/ai";
+import { grokImage } from "@tanstack/ai-grok";
+
 const result = await generateImage({
   adapter: grokImage("grok-imagine-image"),
   prompt: [
@@ -228,6 +254,7 @@ Transcribe audio with Grok STT:
 ```typescript
 import { generateTranscription } from "@tanstack/ai";
 import { grokTranscription } from "@tanstack/ai-grok";
+import { audioFile } from "./audio";
 
 const result = await generateTranscription({
   adapter: grokTranscription("grok-stt"),
