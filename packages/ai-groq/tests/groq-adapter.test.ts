@@ -12,10 +12,7 @@ import {
   createGroqText as _realCreateGroqText,
   groqText as _realGroqText,
 } from '../src/adapters/text'
-import {
-  createGroqSummarize,
-  groqSummarize,
-} from '../src/adapters/summarize'
+import { createGroqSummarize, groqSummarize } from '../src/adapters/summarize'
 import { EventType } from '@tanstack/ai'
 import type { StreamChunk, Tool } from '@tanstack/ai'
 import type { GroqTextProviderOptions } from '../src/index'

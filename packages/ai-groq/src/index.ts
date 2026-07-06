@@ -14,7 +14,6 @@ export {
   type GroqTextProviderOptions,
 } from './adapters/text'
 
-
 // Summarize - thin factory functions over @tanstack/ai's ChatStreamSummarizeAdapter
 export {
   createGroqSummarize,
@@ -47,7 +46,6 @@ export type {
   GroqTTSFormat,
   GroqTTSSampleRate,
 } from './audio/tts-provider-options'
-
 
 // Types
 export type {
