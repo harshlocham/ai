@@ -235,6 +235,9 @@ export type {
 // All types
 export * from './types'
 
+// Shared identity/isolation scope for the persistence + memory subsystems
+export type { Scope } from './scope'
+
 export {
   firstSentence,
   renderLazyCatalogEntry,
