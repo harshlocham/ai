@@ -2779,6 +2779,7 @@ class TextEngine<
       timestamp: Date.now(),
       messages: uiMessagesToWire(modelMessagesToUIMessages(withIds), {
         includeSnapshotStructuredOutput: true,
+        includeActivity: true,
       }),
     }
   }
